@@ -9,5 +9,5 @@ spring:
   datasource:
     url: jdbc:postgresql://217.160.172.112:5432/poll
     username: <username>
-    password: <password>
+    password: <passwor>
     driver-class-name: org.postgresql.Driver
