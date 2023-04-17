@@ -1,0 +1,13 @@
+server:
+  port: 8083
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:postgresql://217.160.172.112:5432/poll
+    username: <username>
+    password: <password>
+    driver-class-name: org.postgresql.Driver
