@@ -1,3 +1,40 @@
 spring:
   profiles:
     active: prod
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+link: https://keycloak.hkamguin.fr/auth/realms/poll-project
+
+rest:
+  security:
+    enabled: true
+    api-matcher: /swagger-ui/index.html#/
+    cors:
+      allowed-origins: ["http://192.168.1.6:4200", "https://polling-project.hkamguin.fr"]
+      allowed-headers: Access-Control-Allow-Origin, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization
+      allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+      max-age: 3600
+      allow-credentials: true
+
+keycloak:
+  auth-server-url: https://keycloak.hkamguin.fr/auth
+  realm: poll-project
+  resource: user-polling
+  admin:
+    username: hermann
+    password: 1258
+  credentials:
+    secret: LZJh57NX2PfeKBnllFHzg4o6m2DLfm1i
+
+security:
+  oauth2:
+    resource:
+      id: user-polling
+      token-info-uri: ${link}/protocol/openid-connect/token/introspect
+      user-info-uri: ${link}/protocol/openid-connect/userinfo
+      jwt:
+        key-value: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwL5ajQqqaEgX8V7Bv+WAGExC9w5q5LUsSAgCi6jv3MQ1Usy/Q+I2j/101Ssme+YU/aB4QEUlmh0PerjEiSOt91cQmQnLdhQxqTeNzYKjeVB5A9vCYte3102G8Sm5ldy7eKvpwiuv6YroSDSwDVG09QFVulihaMlvnbkUUnAqXalYianTMl5eVfpA/zDZ8NWrl52iQtjooz9V/98ACgBZgAs1jHncsJ9d6PfmokVYYwARpEmWZrMrAlrtZIRBYaUn3Hs8QeDITD7R6wlHIlSDq8L6AXIZLNRNaVzjrg2cj/sfwbB7Hj2YmYmKN5xeX69zuxVPBjkhqB5e6QbydzCYXwIDAQAB-----END PUBLIC KEY-----
+

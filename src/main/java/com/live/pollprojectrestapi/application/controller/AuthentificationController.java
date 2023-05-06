@@ -1,18 +1,23 @@
 package com.live.pollprojectrestapi.application.controller;
 
-import com.live.pollprojectrestapi.application.dto.LoginDto;
+import com.live.pollprojectrestapi.application.dto.request.CreateUserRequest;
+import com.live.pollprojectrestapi.application.dto.request.LoginRequest;
+import com.live.pollprojectrestapi.application.dto.response.GetUserDetailsResponse;
 import com.live.pollprojectrestapi.domain.model.*;
 import com.live.pollprojectrestapi.application.dto.UserDto;
 import com.live.pollprojectrestapi.domain.usecase.usersManagement.CreateUserUseCase;
+import com.live.pollprojectrestapi.domain.usecase.usersManagement.GetUserDetailsUseCase;
 import com.live.pollprojectrestapi.domain.usecase.usersManagement.LogInUseCase;
 import com.live.pollprojectrestapi.domain.usecase.usersManagement.UpdateUserUseCase;
 import lombok.AllArgsConstructor;
 import org.keycloak.representations.AccessTokenResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/v1/api")
+@CrossOrigin(origins= {"*"}, maxAge = 4800, allowCredentials = "false" )
 public class AuthentificationController {
 
     private final LogInUseCase logInUseCase;
@@ -21,25 +26,27 @@ public class AuthentificationController {
 
     private final UpdateUserUseCase updateUserUseCase;
 
+    private final GetUserDetailsUseCase getUserDetailsUseCase;
+
     @PostMapping("/login")
-    public AccessTokenResponse login(@RequestBody LoginDto loginDto) {
+    public AccessTokenResponse login(@RequestBody LoginRequest loginRequest) {
         Login login = Login.builder()
-                .username(loginDto.getUsername())
-                .password(loginDto.getPassword())
+                .username(loginRequest.getUsername())
+                .password(loginRequest.getPassword())
                 .build();
 
         return logInUseCase.login(login);
     }
 
     @PostMapping("/users/create")
-    public void createUser(@RequestBody UserDto userDto) {
+    public void createUser(@RequestBody CreateUserRequest createUserRequest) {
         User user = User.builder()
-                .username(userDto.getUsername())
-                .nickname(userDto.getNickname())
-                .email(Email.of(userDto.getEmail()))
+                .username(createUserRequest.getUsername())
+                .nickname(createUserRequest.getNickname())
+                .email(Email.of(createUserRequest.getEmail()))
                 .build();
 
-        Password password = Password.of(userDto.getPassword());
+        Password password = Password.of(createUserRequest.getPassword());
 
         createUserUseCase.createUser(user, password);
     }
@@ -61,6 +68,14 @@ public class AuthentificationController {
 
         updateUserUseCase.updateUser(userId, user);
 
+    }
+
+    @GetMapping("/user/details")
+    public GetUserDetailsResponse getUserDetails() {
+
+        Email ownerEmail = Email.of(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+
+        return GetUserDetailsResponse.of(getUserDetailsUseCase.getUserDetails(ownerEmail));
     }
 
 }
