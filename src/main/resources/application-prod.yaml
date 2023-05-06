@@ -3,7 +3,7 @@ spring:
     database: POSTGRESQL
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   datasource:
     url: jdbc:postgresql://217.160.172.112:5432/poll
     username: ${DB_USER}
