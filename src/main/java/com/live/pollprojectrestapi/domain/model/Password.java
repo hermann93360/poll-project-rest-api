@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.Getter;
 
 public class Password {
-
     @Getter
     private final String value;
 

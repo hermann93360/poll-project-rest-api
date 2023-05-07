@@ -21,7 +21,7 @@ public class UserJpa implements UserPersistence {
     @Override
     public void createUser(User user) {
         UserEntity userEntity = UserEntity.builder()
-                .id(UUID.fromString(user.getId()))
+                .id(user.getId())
                 .email(user.getEmail().getValue())
                 .nickname(user.getNickname())
                 .username(user.getUsername())
@@ -35,7 +35,7 @@ public class UserJpa implements UserPersistence {
         UserEntity userEntity = userRepository.findById(userId.getValue()).orElseThrow();
 
         return User.builder()
-                .id(userEntity.getId().toString())
+                .id(userEntity.getId())
                 .email(Email.of(userEntity.getEmail()))
                 .nickname(userEntity.getNickname())
                 .username(userEntity.getUsername())
@@ -47,7 +47,7 @@ public class UserJpa implements UserPersistence {
         Optional<UserEntity> userEntity = userRepository.findByEmail(email.getValue());
 
         return userEntity.map(entity -> User.builder()
-                .id(entity.getId().toString())
+                .id(entity.getId())
                 .email(Email.of(entity.getEmail()))
                 .nickname(entity.getNickname())
                 .username(entity.getUsername())

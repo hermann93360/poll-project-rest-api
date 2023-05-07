@@ -14,6 +14,8 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/v1/api")
@@ -58,7 +60,7 @@ public class AuthentificationController {
             @RequestParam String idUser) {
 
         User user = User.builder()
-                .id(idUser)
+                .id(UUID.fromString(idUser))
                 .username(userDto.getUsername())
                 .nickname(userDto.getNickname())
                 .email(Email.of(userDto.getEmail()))
@@ -72,9 +74,7 @@ public class AuthentificationController {
 
     @GetMapping("/user/details")
     public GetUserDetailsResponse getUserDetails() {
-
         Email ownerEmail = Email.of(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-
         return GetUserDetailsResponse.of(getUserDetailsUseCase.getUserDetails(ownerEmail));
     }
 

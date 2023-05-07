@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class User {
-    private String id;
+    private UUID id;
     private String username;
     private String nickname;
     private Email email;

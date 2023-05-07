@@ -9,11 +9,16 @@ public class UserId {
     private final UUID value;
 
     public static UserId of(String id) {
+        return new UserId(UUID.fromString(id));
+    }
+
+    public static UserId of(UUID id) {
         return new UserId(id);
     }
 
-    public UserId(String id) {
-        this.value = UUID.fromString(id);
+
+    public UserId(UUID id) {
+        this.value = id;
     }
 
 }

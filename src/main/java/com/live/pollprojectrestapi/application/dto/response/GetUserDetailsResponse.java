@@ -15,7 +15,7 @@ public class GetUserDetailsResponse {
         return new GetUserDetailsResponse(user);
     }
     public GetUserDetailsResponse(User user) {
-        this.userId = user.getId();
+        this.userId = user.getId().toString();
         this.username = user.getUsername();
         this.nickname = user.getNickname();
         this.email = user.getEmail().getValue();

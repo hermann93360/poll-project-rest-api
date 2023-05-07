@@ -90,7 +90,7 @@ public class KeycloakProvider implements KeycloakProviderPort {
 
         assignRoleToUser(userResource);
 
-        user.setId(createdUser.getId());
+        user.setId(UUID.fromString(createdUser.getId()));
 
         return user;
     }
