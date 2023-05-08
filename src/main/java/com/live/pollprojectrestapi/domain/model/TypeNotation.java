@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 public enum TypeNotation {
-    string("string");
+    STAR("STAR"),
+    SCALE10("SCALE10"),
+    SCALE20("SCALE20"),
+    LETTER("LETTER");
 
     private final String value;
 

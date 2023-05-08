@@ -36,7 +36,7 @@ public class PollingStation {
 
     private static PollingStationSettings getPollingStationSettings(PollingStationEntity pollingStationEntity) {
         return PollingStationSettings.builder()
-                .typeNotation(TypeNotation.valueOf(pollingStationEntity.getPollType()))
+                .typeNotation(TypeNotation.valueOf(pollingStationEntity.getTypeNotation()))
                 .notationVisible(pollingStationEntity.isNotationVisible())
                 .userLimit(pollingStationEntity.getUserLimit())
                 .scope(Scope.valueOf(pollingStationEntity.getScope()))
@@ -71,7 +71,7 @@ public class PollingStation {
 
     private static PollingStationSettings getPollingStationSettings(CreatePollingStationRequest createPollingStationRequest) {
         return PollingStationSettings.builder()
-                .typeNotation(TypeNotation.valueOf(createPollingStationRequest.getPollType()))
+                .typeNotation(TypeNotation.valueOf(createPollingStationRequest.getTypeNotation()))
                 .notationVisible(createPollingStationRequest.isNotationVisible())
                 .userLimit(createPollingStationRequest.getUserLimit())
                 .scope(Scope.valueOf(createPollingStationRequest.getScope()))

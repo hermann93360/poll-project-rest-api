@@ -1,7 +1,8 @@
 package com.live.pollprojectrestapi.domain.model;
 
 public enum Scope {
-    string("string");
+    PRIVATE("PRIVATE"),
+    PUBLIC("PUBLIC");
 
     Scope(String value) {
     }
