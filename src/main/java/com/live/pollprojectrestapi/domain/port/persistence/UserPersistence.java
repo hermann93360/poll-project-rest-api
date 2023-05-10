@@ -4,6 +4,7 @@ import com.live.pollprojectrestapi.domain.model.Email;
 import com.live.pollprojectrestapi.domain.model.User;
 import com.live.pollprojectrestapi.domain.model.UserId;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserPersistence {
@@ -13,4 +14,5 @@ public interface UserPersistence {
 
     Optional<User> findByEmail(Email email);
 
+    List<User> findAll();
 }

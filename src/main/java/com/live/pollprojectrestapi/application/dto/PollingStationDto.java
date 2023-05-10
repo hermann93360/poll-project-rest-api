@@ -1,13 +1,16 @@
 package com.live.pollprojectrestapi.application.dto;
 
 import com.live.pollprojectrestapi.domain.model.PollingStation;
+import com.live.pollprojectrestapi.domain.model.Subject;
 import com.live.pollprojectrestapi.infra.persistence.entity.PollingStationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Data
@@ -28,12 +31,11 @@ public class PollingStationDto {
     private String pollType;
     private LocalDateTime startPoll;
     private LocalDateTime endPoll;
+    private List<SubjectDto> subjectDtoList;
 
     public static PollingStationDto fromModel(PollingStation pollingStation) {
         return  PollingStationDto.builder()
                 .pollingStationId(pollingStation.getPollingStationId())
-                .nameOfAdministrator(pollingStation.getPollingStationDescription().getAdministrator().getUsername())
-                .administratorId(pollingStation.getPollingStationDescription().getAdministrator().getId())
                 .name(pollingStation.getPollingStationDescription().getName())
                 .category(pollingStation.getPollingStationDescription().getCategory())
                 .description(pollingStation.getPollingStationDescription().getDescription())
@@ -46,6 +48,13 @@ public class PollingStationDto {
                 .pollType(pollingStation.getPollingStationSettings().getPollType().name())
                 .startPoll(pollingStation.getStart())
                 .endPoll(pollingStation.getEnd())
+                .subjectDtoList(getSubjectsDto(pollingStation.getSubjects()))
                 .build();
+    }
+
+    private static List<SubjectDto> getSubjectsDto(List<Subject> subjects) {
+        return subjects.stream()
+                .map(SubjectDto::fromModel)
+                .collect(Collectors.toList());
     }
 }

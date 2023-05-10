@@ -4,15 +4,14 @@ import com.live.pollprojectrestapi.application.exception.BadRequestException;
 import com.live.pollprojectrestapi.domain.model.*;
 import com.live.pollprojectrestapi.domain.port.persistence.UserPersistence;
 import com.live.pollprojectrestapi.domain.port.provider.KeycloakProviderPort;
-import com.live.pollprojectrestapi.domain.usecase.usersManagement.CreateUserUseCase;
-import com.live.pollprojectrestapi.domain.usecase.usersManagement.GetUserDetailsUseCase;
-import com.live.pollprojectrestapi.domain.usecase.usersManagement.LogInUseCase;
-import com.live.pollprojectrestapi.domain.usecase.usersManagement.UpdateUserUseCase;
+import com.live.pollprojectrestapi.domain.usecase.usersManagement.*;
 import lombok.AllArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,7 +20,8 @@ public class AuthenticationService implements
         CreateUserUseCase,
         UpdateUserUseCase,
         LogInUseCase,
-        GetUserDetailsUseCase {
+        GetUserDetailsUseCase,
+        GetAllUsersUseCase {
 
     private final KeycloakProviderPort keycloakProviderPort;
 
@@ -38,6 +38,8 @@ public class AuthenticationService implements
         checkIfEmailNotExist(user);
 
         User userToCreate = keycloakProviderPort.createKeycloakUser(user, password);
+        userToCreate.setPollingStations(Collections.emptyList());
+
         userPersistence.createUser(userToCreate);
     }
 
@@ -59,9 +61,16 @@ public class AuthenticationService implements
         return user.get();
     }
 
+    @Override
+    public List<User> getAllUsers() {
+        return userPersistence.findAll();
+    }
+
 
     private void checkIfEmailNotExist(User user) {
         if(userPersistence.findByEmail(user.getEmail()).isPresent())
             throw new BadRequestException("This mail is already used");
     }
+
+
 }

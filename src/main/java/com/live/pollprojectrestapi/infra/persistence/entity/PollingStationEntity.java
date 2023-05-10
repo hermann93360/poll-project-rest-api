@@ -5,7 +5,10 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "PollingStation")
@@ -18,7 +21,13 @@ public class PollingStationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID pollingStationId;
+
     private UUID administratorId;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private UserEntity administrator;
+
     private String name;
     private String category;
     private String description;
@@ -32,9 +41,12 @@ public class PollingStationEntity {
     private LocalDateTime startPoll;
     private LocalDateTime endPoll;
 
+    @OneToMany(mappedBy = "pollingStation")
+    private List<SubjectEntity> subjects;
+
     public static PollingStationEntity fromModel(PollingStation pollingStation) {
         return  PollingStationEntity.builder()
-                .administratorId(pollingStation.getPollingStationDescription().getAdministrator().getId())
+                .pollingStationId(pollingStation.getPollingStationId())
                 .name(pollingStation.getPollingStationDescription().getName())
                 .category(pollingStation.getPollingStationDescription().getCategory())
                 .description(pollingStation.getPollingStationDescription().getDescription())
@@ -47,7 +59,33 @@ public class PollingStationEntity {
                 .pollType(pollingStation.getPollingStationSettings().getPollType().name())
                 .startPoll(pollingStation.getStart())
                 .endPoll(pollingStation.getEnd())
+                .subjects(pollingStation.getSubjects() == null ? new ArrayList<>() : getSubjectsEntityFromModel(pollingStation.getSubjects()))
                 .build();
     }
 
+    private static List<SubjectEntity> getSubjectsEntityFromModel(List<Subject> subjects){
+        return subjects.stream()
+                .map(SubjectEntity::fromModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "PollingStationEntity{" +
+                "pollingStationId=" + pollingStationId +
+                ", administratorId=" + administratorId +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", description='" + description + '\'' +
+                ", keywords='" + keywords + '\'' +
+                ", typeNotation='" + typeNotation + '\'' +
+                ", notationVisible=" + notationVisible +
+                ", userLimit=" + userLimit +
+                ", scope='" + scope + '\'' +
+                ", password='" + password + '\'' +
+                ", pollType='" + pollType + '\'' +
+                ", startPoll=" + startPoll +
+                ", endPoll=" + endPoll +
+                '}';
+    }
 }

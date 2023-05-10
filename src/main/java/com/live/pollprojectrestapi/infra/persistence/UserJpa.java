@@ -1,6 +1,7 @@
 package com.live.pollprojectrestapi.infra.persistence;
 
 import com.live.pollprojectrestapi.domain.model.Email;
+import com.live.pollprojectrestapi.domain.model.PollingStation;
 import com.live.pollprojectrestapi.domain.model.User;
 import com.live.pollprojectrestapi.domain.model.UserId;
 import com.live.pollprojectrestapi.domain.port.persistence.UserPersistence;
@@ -9,8 +10,10 @@ import com.live.pollprojectrestapi.infra.persistence.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Component
@@ -45,12 +48,14 @@ public class UserJpa implements UserPersistence {
     @Override
     public Optional<User> findByEmail(Email email) {
         Optional<UserEntity> userEntity = userRepository.findByEmail(email.getValue());
+        return userEntity.map(User::fromEntity);
+    }
 
-        return userEntity.map(entity -> User.builder()
-                .id(entity.getId())
-                .email(Email.of(entity.getEmail()))
-                .nickname(entity.getNickname())
-                .username(entity.getUsername())
-                .build());
+    @Override
+    public List<User> findAll() {
+        List<UserEntity> ue = userRepository.findAll();
+        return ue.stream()
+                .map(User::fromEntity)
+                .collect(Collectors.toList());
     }
 }

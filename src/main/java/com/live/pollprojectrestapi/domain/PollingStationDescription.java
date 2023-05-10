@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 @Builder
 public class PollingStationDescription {
-    private User administrator;
     private String name;
     private String category;
     private String description;
@@ -41,5 +40,15 @@ public class PollingStationDescription {
 
     private boolean isNull(String value) {
         return value == null || value.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "PollingStationDescription{" +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", description='" + description + '\'' +
+                ", keywords='" + keywords + '\'' +
+                '}';
     }
 }
