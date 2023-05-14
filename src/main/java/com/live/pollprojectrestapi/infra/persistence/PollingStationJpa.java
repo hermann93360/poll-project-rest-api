@@ -1,9 +1,6 @@
 package com.live.pollprojectrestapi.infra.persistence;
 
-import com.live.pollprojectrestapi.domain.model.Email;
-import com.live.pollprojectrestapi.domain.model.PollingStation;
-import com.live.pollprojectrestapi.domain.model.User;
-import com.live.pollprojectrestapi.domain.model.UserId;
+import com.live.pollprojectrestapi.domain.model.*;
 import com.live.pollprojectrestapi.domain.port.persistence.PollingStationPersistence;
 import com.live.pollprojectrestapi.domain.port.persistence.UserPersistence;
 import com.live.pollprojectrestapi.infra.persistence.entity.PollingStationEntity;
@@ -17,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.live.pollprojectrestapi.domain.model.Scope.PUBLIC;
 
 @Component
 @AllArgsConstructor
@@ -65,5 +64,16 @@ public class PollingStationJpa implements PollingStationPersistence {
         return pses.stream()
                 .map(PollingStation::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addUserInPollingStation(User userToAdd, PollingStation ps) {
+        UserEntity ue = userRepository.findByEmail(userToAdd.getEmail().getValue()).orElseThrow();
+        PollingStationEntity pse = pollingStationRepository.findById(ps.getPollingStationId()).orElseThrow();
+
+        ue.getParticipant().add(pse);
+        pse.getUsersParticipants().add(ue);
+
+        pollingStationRepository.save(pse);
     }
 }

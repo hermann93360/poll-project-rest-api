@@ -8,10 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,6 +32,9 @@ public class UserEntity {
     private String nickname;
 
     private String email;
+
+    @ManyToMany(mappedBy = "usersParticipants")
+    private List<PollingStationEntity> participant;
 
     public static UserEntity fromModel(User user) {
         return UserEntity.builder()

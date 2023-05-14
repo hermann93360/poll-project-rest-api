@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface PollingStationRepository extends JpaRepository<PollingStationEntity, UUID> {
     List<PollingStationEntity> findAllByAdministratorEmail(String administrator_email);
+
+    List<PollingStationEntity> findAllByScopeContainingIgnoreCase(String scope);
 }

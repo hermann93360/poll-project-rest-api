@@ -2,6 +2,7 @@ package com.live.pollprojectrestapi.infra.persistence.entity;
 
 import com.live.pollprojectrestapi.domain.model.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -44,6 +45,12 @@ public class PollingStationEntity {
     @OneToMany(mappedBy = "pollingStation")
     private List<SubjectEntity> subjects;
 
+    @ManyToMany
+    @JoinTable(name = "pollingStation_users",
+            joinColumns = @JoinColumn(name = "pollingStationId"),
+            inverseJoinColumns = @JoinColumn(name = "userParticipantId"))
+    private List<UserEntity> usersParticipants;
+
     public static PollingStationEntity fromModel(PollingStation pollingStation) {
         return  PollingStationEntity.builder()
                 .pollingStationId(pollingStation.getPollingStationId())
@@ -60,12 +67,19 @@ public class PollingStationEntity {
                 .startPoll(pollingStation.getStart())
                 .endPoll(pollingStation.getEnd())
                 .subjects(pollingStation.getSubjects() == null ? new ArrayList<>() : getSubjectsEntityFromModel(pollingStation.getSubjects()))
+                .usersParticipants(pollingStation.getUsersParticipants() == null ? new ArrayList<>() : getUsersParticipantsEntityFromModel(pollingStation.getUsersParticipants()))
                 .build();
     }
 
     private static List<SubjectEntity> getSubjectsEntityFromModel(List<Subject> subjects){
         return subjects.stream()
                 .map(SubjectEntity::fromModel)
+                .collect(Collectors.toList());
+    }
+
+    private static List<UserEntity> getUsersParticipantsEntityFromModel(List<User> users){
+        return users.stream()
+                .map(UserEntity::fromModel)
                 .collect(Collectors.toList());
     }
 

@@ -4,6 +4,7 @@ import com.live.pollprojectrestapi.application.dto.request.CreatePollingStationR
 import com.live.pollprojectrestapi.domain.PollingStationDescription;
 import com.live.pollprojectrestapi.infra.persistence.entity.PollingStationEntity;
 import com.live.pollprojectrestapi.infra.persistence.entity.SubjectEntity;
+import com.live.pollprojectrestapi.infra.persistence.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class PollingStation {
     private LocalDateTime start;
     private LocalDateTime end;
     private List<Subject> subjects;
+    private List<User> usersParticipants;
 
     public static PollingStation fromEntity(PollingStationEntity pollingStationEntity) {
         PollingStationDescription psd = getPollingStationDescription(pollingStationEntity);
@@ -38,7 +40,14 @@ public class PollingStation {
                 .start(pollingStationEntity.getStartPoll())
                 .end(pollingStationEntity.getEndPoll())
                 .subjects(getSubjectsFromEntitys(pollingStationEntity.getSubjects()))
+                .usersParticipants(getParticipantsFromEntitys(pollingStationEntity.getUsersParticipants()))
                 .build();
+    }
+
+    private static List<User> getParticipantsFromEntitys(List<UserEntity> user) {
+        return user.stream()
+                .map(User::fromEntity)
+                .collect(Collectors.toList());
     }
 
     private static List<Subject> getSubjectsFromEntitys(List<SubjectEntity> subjects) {

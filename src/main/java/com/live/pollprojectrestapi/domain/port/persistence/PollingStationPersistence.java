@@ -19,4 +19,6 @@ public interface PollingStationPersistence {
     Optional<User> getAdministrator(UUID pollingStationId);
 
     List<PollingStation> getPollingStationToUser(Email ownerEmail);
+
+    void addUserInPollingStation(User userToAdd, PollingStation ps);
 }

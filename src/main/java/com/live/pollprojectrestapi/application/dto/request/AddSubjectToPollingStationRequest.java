@@ -9,7 +9,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 public class AddSubjectToPollingStationRequest {
-    private UUID pollingStationId;
     private String name;
     private String pathImg;
     private String description;
