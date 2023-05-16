@@ -13,7 +13,7 @@ rest:
     enabled: true
     api-matcher: /swagger-ui/index.html#/
     cors:
-      allowed-origins: ["http://192.168.1.6:4200", "https://polling-project.hkamguin.fr"]
+      allowed-origins: ["http://192.168.1.6:4200","http://localhost:4200", "https://polling-project.hkamguin.fr"]
       allowed-headers: Access-Control-Allow-Origin, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization
       allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
       max-age: 3600
