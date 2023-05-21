@@ -12,9 +12,10 @@ public interface SessionPersistence {
 
     UUID createSession(Session session);
 
+    Optional<Session> getSessionByCode(String code);
     Optional<Session> getSession(UUID sessionId);
 
-    void addGroupInSession(UUID sessionId, Group groupToAdd, Person firstPersonInGroup);
+    UUID addGroupInSession(UUID sessionId, Group groupToAdd, Person firstPersonInGroup);
 
     Optional<Group> getGroupById(UUID groupId);
 

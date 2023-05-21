@@ -4,6 +4,17 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: pollproject502@gmail.com
+    password: bzjzrupceiiokfnv
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 
 link: https://keycloak.hkamguin.fr/auth/realms/poll-project
@@ -11,7 +22,7 @@ link: https://keycloak.hkamguin.fr/auth/realms/poll-project
 rest:
   security:
     enabled: true
-    api-matcher: /swagger-ui/index.html#/
+    api-matcher: /swagger-ui/index.html#/ /*
     cors:
       allowed-origins: ["http://192.168.1.6:4200","http://localhost:4200", "https://polling-project.hkamguin.fr"]
       allowed-headers: Access-Control-Allow-Origin, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization

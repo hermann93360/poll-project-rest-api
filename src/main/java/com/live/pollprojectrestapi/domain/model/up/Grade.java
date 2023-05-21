@@ -1,5 +1,6 @@
 package com.live.pollprojectrestapi.domain.model.up;
 
+import com.live.pollprojectrestapi.application.dto.request.up.response.GradeDto;
 import com.live.pollprojectrestapi.infra.persistence.entity.up.GradeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,13 @@ public class Grade {
                 .gradeId(gradeEntity.getGradeId())
                 .assignedPerson(Person.fromEntity(gradeEntity.getAssignedPerson()))
                 .note(gradeEntity.getNote())
+                .build();
+    }
+
+    public GradeDto toDto() {
+        return GradeDto.builder()
+                .nameAssigned(assignedPerson.getName())
+                .note(note)
                 .build();
     }
 }

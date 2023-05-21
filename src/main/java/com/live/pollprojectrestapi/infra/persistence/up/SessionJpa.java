@@ -16,8 +16,11 @@ import com.live.pollprojectrestapi.infra.persistence.repository.up.SessionReposi
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @AllArgsConstructor
@@ -32,7 +35,13 @@ public class SessionJpa implements SessionPersistence {
     public UUID createSession(Session session) {
         SessionEntity sessionToSave = SessionEntity.fromModel(session);
         SessionEntity sessionSaved = sessionRepository.save(sessionToSave);
-        return  sessionSaved.getSessionId();
+        return sessionSaved.getSessionId();
+    }
+
+    @Override
+    public Optional<Session> getSessionByCode(String code) {
+        List<Session> sessionAll = sessionRepository.findAll().stream().map(Session::fromEntity).collect(Collectors.toList());
+        return sessionAll.stream().filter(session -> session.getSessionId().toString().startsWith(code)).findAny();
     }
 
     @Override
@@ -43,7 +52,7 @@ public class SessionJpa implements SessionPersistence {
     }
 
     @Override
-    public void addGroupInSession(UUID sessionId, Group groupToAdd, Person firstPersonInGroup) {
+    public UUID addGroupInSession(UUID sessionId, Group groupToAdd, Person firstPersonInGroup) {
         SessionEntity getSession = sessionRepository.findById(sessionId).get();
         GroupEntity group = GroupEntity.fromModel(groupToAdd);
         PersonEntity person = PersonEntity.fromModel(firstPersonInGroup);
@@ -56,8 +65,10 @@ public class SessionJpa implements SessionPersistence {
         person.setAssociatedGroup(group);
 
         sessionRepository.save(getSession);
-        groupRepository.save(group);
+        GroupEntity save = groupRepository.save(group);
         personRepository.save(person);
+        return save.getGroupId();
+
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.live.pollprojectrestapi.application.dto.request.up.CreateSessionReque
 import com.live.pollprojectrestapi.application.dto.request.up.ManagePersonRequest;
 import com.live.pollprojectrestapi.application.dto.request.up.UpdateGroupRequest;
 import com.live.pollprojectrestapi.application.dto.request.up.response.CreateSessionResponse;
+import com.live.pollprojectrestapi.application.dto.request.up.response.GetGroupResponse;
+import com.live.pollprojectrestapi.application.dto.request.up.response.GetResultResponse;
 import com.live.pollprojectrestapi.application.dto.request.up.response.GetSessionResponse;
 import com.live.pollprojectrestapi.domain.model.Email;
 import com.live.pollprojectrestapi.domain.model.up.Person;
@@ -28,6 +30,11 @@ public class SessionController {
     private AddGroupInSessionUseCase addGroupInSessionUseCase;
     private UpdateGroupInSessionUseCase updateGroupInSessionUseCase;
     private GradeSessionUseCase gradeSessionUseCase;
+    private GetResultUseCase getResultUseCase;
+    private SendMailForCreateGroupUseCase sendMailForCreateGroupUseCase;
+    private GetGroupUseCase getGroupUseCase;
+    private CheckIfSessionExistUseCase checkIfSessionExistUseCase;
+    private GetPersonByEmail getPersonByEmail;
 
     @PostMapping("/sessions/create")
     public CreateSessionResponse createSession(@RequestBody CreateSessionRequest createSessionRequest) {
@@ -36,13 +43,13 @@ public class SessionController {
         return CreateSessionResponse.of(sessionId);
     }
 
-    @GetMapping("/sessions/{sessionId}")
+    @PostMapping("/sessions/{code}")
     public GetSessionResponse getSession(
-            @PathVariable String sessionId,
+            @PathVariable String code,
             @RequestBody ManagePersonRequest managePersonRequest) {
 
-        Person personRequesting = getOrCreatePersonByEmailUseCase.getOrCreatePersonByEmail(managePersonRequest);
-        Session sessionToGet = getSessionUseCase.getSession(UUID.fromString(sessionId), personRequesting);
+        Session sessionToGet = getSessionUseCase.getSession(code, managePersonRequest);
+        Person personRequesting = getPersonByEmail.getPersonByEmail(managePersonRequest);
         return GetSessionResponse.of(sessionToGet, personRequesting);
 
     }
@@ -53,7 +60,8 @@ public class SessionController {
             @RequestBody ManagePersonRequest managePersonRequest) {
 
         Person firstPersonInGroup = getOrCreatePersonByEmailUseCase.getOrCreatePersonByEmail(managePersonRequest);
-        addGroupInSessionUseCase.addGroupInSessionUseCase(UUID.fromString(sessionId), firstPersonInGroup);
+        UUID groupId = addGroupInSessionUseCase.addGroupInSessionUseCase(UUID.fromString(sessionId), firstPersonInGroup);
+        sendMailForCreateGroupUseCase.sendMailForCreateGroup(firstPersonInGroup, groupId, UUID.fromString(sessionId));
     }
 
     @PatchMapping("/group/{groupId}/update")
@@ -64,10 +72,30 @@ public class SessionController {
     }
 
     @PostMapping("/sessions/{sessionId}/grades/add")
-    public void addGroup(
+    public void gradeGroup(
             @PathVariable String sessionId,
             @RequestBody AddGradesInSessionRequest addGradesInSessionRequest) {
 
         gradeSessionUseCase.gradeSessionUseCase(UUID.fromString(sessionId), addGradesInSessionRequest);
     }
+
+    @GetMapping("/sessions/{code}/results")
+    public GetResultResponse getResults(
+            @PathVariable String code) {
+        return getResultUseCase.getResult(code);
+    }
+    @GetMapping("/sessions/check/{sessionId}")
+    public boolean checkIfSessionExist(
+            @PathVariable String sessionId) {
+        return checkIfSessionExistUseCase.check(sessionId);
+    }
+
+
+    @GetMapping("/groups/{groupId}")
+    public GetGroupResponse getgroupById(
+            @PathVariable String groupId) {
+
+        return GetGroupResponse.of(getGroupUseCase.getGroup(UUID.fromString(groupId)));
+    }
+
 }

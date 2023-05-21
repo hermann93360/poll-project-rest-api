@@ -36,10 +36,10 @@ public class GroupEntity {
     @OneToMany(mappedBy = "associatedGroup")
     private List<PersonEntity> personsInGroup;
 
-    @OneToMany(mappedBy = "assignedPerson")
+    @OneToMany(mappedBy = "associatedGroup")
     private List<GradeEntity> gradesOfGroups;
 
-    private float average;
+    private double average;
 
     private boolean configured;
 

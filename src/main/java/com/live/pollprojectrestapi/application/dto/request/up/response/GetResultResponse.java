@@ -9,4 +9,8 @@ import java.util.List;
 @Data
 public class GetResultResponse {
     private final List<ResultDto> results;
+
+    public static GetResultResponse of(List<ResultDto> results) {
+        return new GetResultResponse(results);
+    }
 }

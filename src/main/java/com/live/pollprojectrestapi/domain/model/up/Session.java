@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -49,6 +51,43 @@ public class Session {
     }
 
     public boolean isPrivate() {
-        return scope.equals("PRIVATE");
+        return scope.equalsIgnoreCase("PRIVATE");
+    }
+
+    public boolean allGroupHaveSameGradeCount() {
+        int sizeOfGrades = groupsOfSession.stream().findFirst().get().getGradesOfGroups().size();
+        return groupsOfSession.stream()
+                .map(group -> group.getGradesOfGroups().size())
+                .allMatch(size -> size == sizeOfGrades);
+    }
+
+    public boolean personAlreadyGraded(UUID personId) {
+        return groupsOfSession
+                .stream()
+                .anyMatch(group -> group.isGraded(personId));
+    }
+
+    public boolean isActivate() {
+        return groupsOfSession
+                .stream()
+                .allMatch(Group::isConfigured);
+    }
+
+    public int countOfPersonsInAllGroups() {
+        return groupsOfSession
+                .stream()
+                .mapToInt(Group::countOfPersons)
+                .sum();
+    }
+
+    public boolean canGetResult() {
+        return groupsOfSession
+                .stream()
+                .map(Group::getGradesOfGroups)
+                .allMatch(grades -> grades.size() == countOfPersonsInAllGroups());
+    }
+
+    public boolean personHasAlreadyGrade(Person person){
+        return groupsOfSession.stream().anyMatch(group -> group.gradeExist(person.getEmail()));
     }
 }
